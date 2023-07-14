@@ -42,7 +42,7 @@ const Navbar = async () => {
       </Link>
       <div className="flex flex-row gap-5 items-center">
         {user ? <UserIsAuthenticated /> : <UserIsNotAuthenticated />}
-        <Link href={"."} className="text-2xl">
+        <Link href="/" className="text-2xl">
           <FiRefreshCcw />
         </Link>
       </div>
