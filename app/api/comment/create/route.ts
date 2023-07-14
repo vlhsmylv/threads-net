@@ -13,35 +13,6 @@ export const POST = async (req: Request) => {
     return false;
   }
 
-  const updateThread = await prisma.thread.update({
-    where: {
-      id: comment.threadId,
-    },
-    data: {
-      comments: {
-        connect: {
-          id: createComment.id,
-        },
-      },
-    },
-  });
-
-  if (!updateThread) {
-    return false;
-  }
-
-  const updateUser = await prisma.user.update({
-    where: {
-      id: comment.authorId,
-    },
-    data: {
-      comments: {
-        connect: {
-          id: createComment.id,
-        },
-      },
-    },
-  });
   
   const createdComment = await prisma.comment.findFirst({
     where: {

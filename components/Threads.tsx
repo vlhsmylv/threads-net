@@ -6,12 +6,16 @@ import Comments from "./Comments";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import RemoveThread from "./thread/RemoveThread";
 import { months } from "@/data/months";
+import LikeThread from "./thread/LikeThread";
+import { toastConfig } from "@/toast/toast";
 
-export const Thread = ({ thread, currentUser, mode }: any) => {
+export const Thread = ({ thread, currentUserId, mode }: any) => {
   const [showComments, setShowComments] = useState(false);
+
+  const currentUser = thread.author.id === currentUserId ? true : false;
 
   const toggleShowComments = () => {
     setShowComments(showComments ? false : true);
@@ -62,11 +66,26 @@ export const Thread = ({ thread, currentUser, mode }: any) => {
           {thread.content}
         </div>
         <div className="mt-3 text-base text-gray-500">
-          {thread.comments.length}{" "}
+          {thread.likes ? thread.likes.length : 0}{" "}
+          {thread.likes ? (
+            thread.likes.length > 1 ? (
+              <>likes</>
+            ) : (
+              <>like</>
+            )
+          ) : (
+            <>like</>
+          )}{" "}
+          / {thread.comments.length}{" "}
           {thread.comments.length > 1 ? <>comments</> : <>comment</>}
         </div>
         <div className="flex justify-between items-center mt-3">
           <div className="flex gap-4">
+            {currentUserId ? (
+              <LikeThread threadId={thread.id} likerId={currentUserId} />
+            ) : (
+              <></>
+            )}
             <button
               className="cursor-pointer text-lg"
               onClick={toggleShowComments}
@@ -79,7 +98,7 @@ export const Thread = ({ thread, currentUser, mode }: any) => {
                 navigator.clipboard.writeText(
                   `${process.env.NEXT_PUBLIC_DOMAIN}/${author.username}/${thread.id}`
                 );
-                toast.success("Thread link copied to clipboard!");
+                toast.success("Thread link copied to clipboard!", toastConfig);
               }}
             >
               <BsShare />
@@ -114,28 +133,26 @@ export const Thread = ({ thread, currentUser, mode }: any) => {
 
 const Threads = ({ threads, currentUserId }: any) => {
   return (
-    <section
-      className=" flex flex-col gap-10 overflow-auto" /* max-h-[calc(100vh-255px)] */
-    >
-      {threads.length !== 0 ? (
-        <>
-          {threads.map((thread: any, i: any) => (
-            <Thread
-              key={i}
-              thread={thread}
-              currentUser={thread.author.id === currentUserId ? true : false}
-            />
-          ))}
-        </>
-      ) : (
-        <div className="text-xl text-center">
-          There are no threads.{" "}
-          <Link href={"/create"} className="underline">
-            Create now!
-          </Link>
-        </div>
-      )}
-    </section>
+    <SessionProvider>
+      <section
+        className=" flex flex-col gap-10 overflow-auto" /* max-h-[calc(100vh-255px)] */
+      >
+        {threads.length !== 0 ? (
+          <>
+            {threads.map((thread: any, i: any) => (
+              <Thread key={i} thread={thread} currentUserId={currentUserId} />
+            ))}
+          </>
+        ) : (
+          <div className="text-xl text-center">
+            There are no threads.{" "}
+            <Link href={"/create"} className="underline">
+              Create now!
+            </Link>
+          </div>
+        )}
+      </section>
+    </SessionProvider>
   );
 };
 

@@ -19,6 +19,7 @@ model User {
   password String
   threads Thread[]
   comments Comment[]
+  likes Like[]
   picture String
   bio String
 }
@@ -30,6 +31,7 @@ model Thread {
   author User @relation(fields: [authorId], references: [id])
   authorId String
   comments Comment[]
+  likes Like[]
 }
 
 model Comment {
@@ -40,4 +42,16 @@ model Comment {
   threadId String
   author User @relation(fields: [authorId], references: [id])
   authorId String
+  likes Like[]
+}
+
+model Like {
+  id String @id @default(uuid()) @map("_id")
+  createdAt DateTime @default(now())
+  liker User @relation(fields: [likerId], references: [id])
+  likerId String
+  thread Thread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String?
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?
 }

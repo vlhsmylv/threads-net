@@ -10,12 +10,18 @@ const Page = async () => {
     },
     include: {
       author: true,
+      likes: {
+        include: {
+          liker: true
+        }
+      },
       comments: {
         orderBy: {
           createdAt: "desc"
         },
         include: {
-          author: true
+          author: true,
+          likes: true
         }
       }
     },

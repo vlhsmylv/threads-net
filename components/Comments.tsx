@@ -3,6 +3,7 @@ import WriteComment from "./comment/WriteComment";
 import Link from "next/link";
 import { months } from "@/data/months";
 import RemoveComment from "./comment/RemoveComment";
+import LikeComment from "./comment/LikeComment";
 
 const Comment = ({ comment, threadId, currentUserId }: any) => {
   const { author } = comment;
@@ -39,13 +40,33 @@ const Comment = ({ comment, threadId, currentUserId }: any) => {
             </Link>
           </div>
         </div>
-        <div className="lg:text-sm lg:black lg:mt-0 text-[15px] text-gray-500 mt-3">{commentCreatedAtString}</div>
+        <div className="lg:text-sm lg:black lg:mt-0 text-[15px] text-gray-500 mt-3">
+          {commentCreatedAtString}
+        </div>
       </div>
       <div className="lg:px-[calc(40px+1.25rem)] lg:mt-2 mt-3 lg:text-base text-sm">
         {comment.content}
       </div>
-      <div className="flex justify-between items-center">
-        <div></div>
+      <div className="lg:mt-2 mt-3 lg:text-sm text-[15px] text-gray-500 lg:pl-[calc(40px+1.25rem)]">
+        {comment.likes ? comment.likes.length : 0}{" "}
+        {comment.likes ? (
+          comment.likes.length > 1 ? (
+            <>likes</>
+          ) : (
+            <>like</>
+          )
+        ) : (
+          <>like</>
+        )}
+      </div>
+      <div className="flex justify-between items-center lg:px-[calc(40px+1.25rem)] lg:mt-2 mt-3">
+        <div>
+          {currentUserId ? (
+            <LikeComment commentId={comment.id} likerId={currentUserId} />
+          ) : (
+            <></>
+          )}
+        </div>
 
         {currentUser ? (
           <RemoveComment commentId={comment.id} authorId={author.id} />
@@ -66,9 +87,7 @@ const Comments = ({ threadId, comments, show }: any) => {
         show ? "block" : "hidden"
       } mt-3 rounded-2xl bg-gray-100 p-5`}
     >
-      <div className="text-lg">
-        Comments
-      </div>
+      <div className="text-lg">Comments</div>
       {comments.length !== 0 ? (
         <div className="max-h-[400px] overflow-auto flex flex-col gap-3 mt-3">
           {comments.map((comment: any, i: any) => (
@@ -92,7 +111,10 @@ const Comments = ({ threadId, comments, show }: any) => {
         <WriteComment threadId={threadId} authorId={clientSession.user.id} />
       ) : (
         <div className="mt-3">
-          <Link href="/login" className="underline">Login</Link> to write comment
+          <Link href="/login" className="underline">
+            Login
+          </Link>{" "}
+          to write comment
         </div>
       )}
     </div>

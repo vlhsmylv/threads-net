@@ -12,6 +12,11 @@ const Thread = async ({ threadId }: any) => {
     },
     include: {
       author: true,
+      likes: {
+        include: {
+          liker: true
+        }
+      },
       comments: {
         orderBy: {
           createdAt: "desc",

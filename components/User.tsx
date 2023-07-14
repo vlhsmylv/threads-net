@@ -5,6 +5,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import SignOut from "./SignOut";
+import { FiLink } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { toastConfig } from "@/toast/toast";
+import CopyUserCard from "./CopyUserCard";
 
 export const UserCard = ({ user, currentUser }: any) => (
   <div className="flex lg:gap-0 gap-5 lg:justify-around items-center lg:flex-nowrap flex-wrap justify-center">
@@ -17,9 +21,7 @@ export const UserCard = ({ user, currentUser }: any) => (
         <div className="text-xl cursor-default">
           {user.name} {user.surname}
         </div>
-        <div className="bg-gray-200 cursor-default rounded-full lg:p-3 px-3 py-2 lg:text-base text-sm">
-          @{user.username}
-        </div>
+        <CopyUserCard username={user.username} />
       </div>
       <div className="max-w-[300px] font-light">
         {user.bio.length === 0 ? (
@@ -58,6 +60,11 @@ const User = async ({ username }: any) => {
           createdAt: "desc",
         },
         include: {
+          likes: {
+            include: {
+              liker: true,
+            },
+          },
           author: true,
           comments: {
             orderBy: {
@@ -65,6 +72,7 @@ const User = async ({ username }: any) => {
             },
             include: {
               author: true,
+              likes: true,
             },
           },
         },

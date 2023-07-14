@@ -22,21 +22,8 @@ const createThread = async (data: FormData) => {
     },
   });
 
-  const updateUser = await prisma.user.update({
-    where: {
-      id: thread.authorId,
-    },
-    data: {
-      threads: {
-        connect: {
-          id: createThread.id,
-        },
-      },
-    },
-  });
-
-  if (updateUser) {
-    redirect("/");
+  if(createThread) {
+    redirect("/")
   }
 };
 
