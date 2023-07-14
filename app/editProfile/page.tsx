@@ -46,7 +46,7 @@ const Page = async () => {
 
   if (user) {
     const styles = {
-      preferenceGroup: "flex gap-10 items-center",
+      preferenceGroup: "flex lg:flex-nowrap flex-wrap lg:gap-10 gap-3 items-center",
       leftSideImgBox: "w-28",
       leftSideTextBox: "w-28 text-lg",
       input:
@@ -56,7 +56,7 @@ const Page = async () => {
 
     return (
       <form action={saveChanges} className="flex flex-col gap-10">
-        <div className={styles.preferenceGroup}>
+        <div className={`${styles.preferenceGroup} lg:justify-start justify-center`}>
           <div className={styles.leftSideImgBox}>
             <img src={picture} className="rounded-full w-28 h-28" />
           </div>
